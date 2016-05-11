@@ -9,5 +9,5 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.asesolutions.mobile.loteria.MainActivity">
 
-    <include layout="@layout/lotto_results_row" />
+    <include layout="@layout/lotto_results_list" />
 </RelativeLayout>
