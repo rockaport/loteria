@@ -27,18 +27,30 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
     int ballColor;
     int extraBallColor;
 
-
     public LottoResultsAdapter(Cursor resultsCursor) {
         this.resultsCursor = resultsCursor;
         this.currentTime = System.currentTimeMillis();
         this.ballColor = MainApplication.getStaticContext().getResources().getColor(R.color.colorPrimary);
         this.extraBallColor = MainApplication.getStaticContext().getResources().getColor(R.color.colorAccent);
-
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.lotto_result_row, parent, false);
+        // Get an instance of the layout inflater
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+
+        // Inflate the row
+        View view = layoutInflater.inflate(R.layout.lotto_result_row, parent, false);
+
+        // Get the container where numbers will be placed
+        LinearLayout numbersContainer = (LinearLayout) view.findViewById(R.id.numbers_container);
+
+        // Loop through and add lotto balls
+        // TODO: shouldn't hardcode the number of balls to display
+        for (int i = 0; i < 6; i++) {
+            layoutInflater.inflate(R.layout.lotto_result_number_ball, numbersContainer, true);
+        }
+
         return new ViewHolder(view);
     }
 
@@ -66,23 +78,19 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
         // Update the actual numbers
         String[] winningNumbers = resultsCursor.getString(resultsCursor.getColumnIndex(MegaMillionsContract.Column.WINNING_NUMBERS)).split(" ");
 
-        if (winningNumbers.length == 5) {
-            ((TextView) holder.oneBall.findViewById(R.id.lotto_ball_number)).setText(winningNumbers[0]);
-            setBackgroundColor(holder.oneBall.findViewById(R.id.lotto_ball_background), ballColor);
-            ((TextView) holder.twoBall.findViewById(R.id.lotto_ball_number)).setText(winningNumbers[1]);
-            setBackgroundColor(holder.twoBall.findViewById(R.id.lotto_ball_background), ballColor);
-            ((TextView) holder.threeBall.findViewById(R.id.lotto_ball_number)).setText(winningNumbers[2]);
-            setBackgroundColor(holder.threeBall.findViewById(R.id.lotto_ball_background), ballColor);
-            ((TextView) holder.fourBall.findViewById(R.id.lotto_ball_number)).setText(winningNumbers[3]);
-            setBackgroundColor(holder.fourBall.findViewById(R.id.lotto_ball_background), ballColor);
-            ((TextView) holder.fiveBall.findViewById(R.id.lotto_ball_number)).setText(winningNumbers[4]);
-            setBackgroundColor(holder.fiveBall.findViewById(R.id.lotto_ball_background), ballColor);
+        for (int i = 0; i < winningNumbers.length; i++) {
+            View numberBall = holder.numbersContainer.getChildAt(i).findViewById(R.id.lotto_ball_number);
+
+            ((TextView) numberBall).setText(winningNumbers[i]);
+            setBackgroundColor(numberBall, ballColor);
         }
 
         int megaBall = resultsCursor.getInt(resultsCursor.getColumnIndex(MegaMillionsContract.Column.MEGA_BALL));
 
-        ((TextView) holder.sixBall.findViewById(R.id.lotto_ball_number)).setText(String.valueOf(megaBall));
-        setBackgroundColor(holder.sixBall.findViewById(R.id.lotto_ball_background), extraBallColor);
+        View numberBall = holder.numbersContainer.getChildAt(holder.numbersContainer.getChildCount() - 1).findViewById(R.id.lotto_ball_number);
+
+        ((TextView) numberBall).setText(String.valueOf(megaBall));
+        setBackgroundColor(numberBall, extraBallColor);
     }
 
     private void setBackgroundColor(View view, int color) {
@@ -106,19 +114,6 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
         TextView dateAgo;
         @BindView(R.id.numbers_container)
         LinearLayout numbersContainer;
-        // TODO: This obviously sucks, i'll probably just programmatically build the items (one day)
-        @BindView(R.id.one)
-        View oneBall;
-        @BindView(R.id.two)
-        View twoBall;
-        @BindView(R.id.three)
-        View threeBall;
-        @BindView(R.id.four)
-        View fourBall;
-        @BindView(R.id.five)
-        View fiveBall;
-        @BindView(R.id.six)
-        View sixBall;
 
         public ViewHolder(View itemView) {
             super(itemView);

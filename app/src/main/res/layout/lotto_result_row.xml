@@ -34,48 +34,5 @@
         android:id="@+id/numbers_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <include
-            android:id="@+id/one"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-
-        <include
-            android:id="@+id/two"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-
-        <include
-            android:id="@+id/three"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-
-        <include
-            android:id="@+id/four"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-
-        <include
-            android:id="@+id/five"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-
-        <include
-            android:id="@+id/six"
-            layout="@layout/lotto_result_number_ball"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.0" />
-    </LinearLayout>
+        android:orientation="horizontal" />
 </LinearLayout>
