@@ -84,33 +84,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-//        syncDatabase();
-    }
-
-    private void syncDatabase() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("https://data.ny.gov/resource/")
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    MegaMillionsApi service = retrofit.create(MegaMillionsApi.class);
-                    Call<List<MegaMillionsApiResult>> x = service.listResults("draw_date>'2005-01-01T14:00:00'", 50000);
-                    List<MegaMillionsApiResult> results = x.execute().body();
-                    Database.save(results);
-
-                    Timber.d(results.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Timber.d("Hey");
-                }
-            }
-        }).start();
     }
 
     @Override

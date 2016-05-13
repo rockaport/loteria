@@ -2,6 +2,8 @@ package com.asesolutions.mobile.loteria;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import timber.log.Timber;
 
@@ -10,6 +12,10 @@ public class MainApplication extends Application {
 
     public static Context getStaticContext() {
         return context;
+    }
+
+    public static SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override

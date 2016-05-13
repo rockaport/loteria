@@ -1,4 +1,4 @@
-package com.asesolutions.mobile.loteria.history;
+package com.asesolutions.mobile.loteria.history.adapters;
 
 import android.database.Cursor;
 import android.graphics.drawable.GradientDrawable;
