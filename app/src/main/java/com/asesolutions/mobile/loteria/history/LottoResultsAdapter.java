@@ -1,4 +1,4 @@
-package com.asesolutions.mobile.loteria;
+package com.asesolutions.mobile.loteria.history;
 
 import android.database.Cursor;
 import android.graphics.drawable.GradientDrawable;
@@ -10,6 +10,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.asesolutions.mobile.loteria.DateUtil;
+import com.asesolutions.mobile.loteria.MainApplication;
+import com.asesolutions.mobile.loteria.R;
 import com.asesolutions.mobile.loteria.database.MegaMillionsContract;
 
 import java.text.SimpleDateFormat;

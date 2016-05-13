@@ -1,22 +1,19 @@
 package com.asesolutions.mobile.loteria;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 
 import com.asesolutions.mobile.loteria.data.MegaMillionsApi;
 import com.asesolutions.mobile.loteria.data.MegaMillionsApiResult;
 import com.asesolutions.mobile.loteria.database.Database;
+import com.asesolutions.mobile.loteria.history.LottoResultsListFragment;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,61 +26,59 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
-    @BindView(R.id.results_list)
-    RecyclerView resultsList;
-    @BindView(R.id.results_swipe_refresh_layout)
-    SwipeRefreshLayout swipeRefreshLayout;
-    private DrawerLayout mDrawerLayout;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.navigation_view)
+    NavigationView navigationView;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.content_container)
+    FrameLayout contentContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        // ButterKnife bind views
+        ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
 
-        final ActionBar ab = getSupportActionBar();
-//        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-        ab.setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mDrawerLayout.openDrawer(GravityCompat.START);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
+        assert drawerLayout != null;
+        drawerLayout.openDrawer(GravityCompat.START);
+
+        assert navigationView != null;
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
-                        mDrawerLayout.closeDrawers();
+                        drawerLayout.closeDrawers();
+
+                        handleNavigationItemClicked(menuItem);
                         return true;
                     }
                 });
+    }
 
-        // ButterKnife bind views
-        ButterKnife.bind(this);
-
-        resultsList.setLayoutManager(new LinearLayoutManager(this));
-        resultsList.setAdapter(new LottoResultsAdapter(Database.getMegaMillionsCursor()));
-
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                Timber.d("Refreshing");
-                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 3000);
-
-                syncDatabase();
-            }
-        });
+    private void handleNavigationItemClicked(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.history:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.content_container, LottoResultsListFragment.newInstance())
+                        .commit();
+        }
     }
 
     @Override
@@ -91,13 +86,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
 //        syncDatabase();
-
-
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl("https://api.github.com/")
-//                .build();
-//
-//        GitHubService service = retrofit.create(GitHubService.class);
     }
 
     private void syncDatabase() {
@@ -131,7 +119,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (id) {
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.history:
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .add(R.id.content_container, LottoResultsListFragment.newInstance())
+                        .commit();
                 return true;
         }
 
