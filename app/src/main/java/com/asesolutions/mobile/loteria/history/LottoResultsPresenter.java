@@ -1,11 +1,15 @@
 package com.asesolutions.mobile.loteria.history;
 
+import android.database.Cursor;
+
 import com.asesolutions.mobile.loteria.data.MegaMillionsService;
 import com.asesolutions.mobile.loteria.database.Database;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class LottoResultsPresenter implements LottoResultsContract.Presenter {
     private LottoResultsContract.View view;
@@ -14,21 +18,33 @@ public class LottoResultsPresenter implements LottoResultsContract.Presenter {
         this.view = view;
     }
 
+    //                 Y/--- fetch --- save-db ---\
+    // shouldRefresh ---                           --- get-cursor --- refresh-list --- update-progress
+    //                 N\-------------------------/
     @Override
-    public void refreshList() {
+    public void refreshList(boolean forceRefresh) {
+        // Start displaying progress
         view.displayProgress(true);
 
-        Observable.just(LottoResultsPreferences.shouldRefresh())
-                .delaySubscription(2, TimeUnit.SECONDS)
+        Observable<Cursor> finalObservable;
+
+        if (forceRefresh) {
+            finalObservable = Observable
+                    .just(LottoResultsPreferences.shouldRefresh())
+                    .flatMap(refresh -> MegaMillionsService.fetchResults())
+                    .flatMap(Database::save)
+                    .singleOrDefault(null)
+                    .flatMap(aVoid -> Database.getMegaMillionsCursor());
+        } else {
+            finalObservable = Database.getMegaMillionsCursor();
+        }
+
+        finalObservable
+                .delay(2, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(() -> view.displayProgress(false))
-                .subscribe(shoudRefresh -> {
-                    if (shoudRefresh) {
-                        // do the refresh
-                        // TODO: 5/13/16 This service should be injected, this should also support
-                        // testing
-                        MegaMillionsService.syncDatabase();
-                        view.showList(Database.getMegaMillionsCursor());
-                    }
-                });
+                .subscribe(cursor -> view.showList(cursor),
+                        throwable -> view.showError(throwable));
     }
 }

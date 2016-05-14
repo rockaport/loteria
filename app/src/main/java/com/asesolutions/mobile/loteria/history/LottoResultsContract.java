@@ -7,9 +7,11 @@ public interface LottoResultsContract {
         void displayProgress(boolean display);
 
         void showList(Cursor cursor);
+
+        void showError(Throwable error);
     }
 
     interface Presenter {
-        void refreshList();
+        void refreshList(boolean forceRefresh);
     }
 }

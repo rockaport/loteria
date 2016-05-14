@@ -22,7 +22,7 @@ public class LottoResultsPreferences {
         long elapsedHours = TimeUnit.MILLISECONDS.toHours(currentTime - lastUpdate);
 
         // Save this last update time
-        saveLastUpdateTime(lastUpdate);
+        saveLastUpdateTime(currentTime);
 
         // Check if we should update given the period
         return elapsedHours >= UPDATE_PERIOD_IN_HOURS;

@@ -12,6 +12,7 @@ import com.asesolutions.mobile.loteria.data.MegaMillionsApiResult;
 import java.text.ParseException;
 import java.util.List;
 
+import rx.Observable;
 import timber.log.Timber;
 
 public class Database extends SQLiteOpenHelper {
@@ -39,7 +40,7 @@ public class Database extends SQLiteOpenHelper {
         attemptInsert(getInstance().getWritableDatabase(), result);
     }
 
-    public static void save(List<MegaMillionsApiResult> megaMillionsApiResults) {
+    public static Observable<Void> save(List<MegaMillionsApiResult> megaMillionsApiResults) {
         SQLiteDatabase writableDatabase = getInstance().getWritableDatabase();
 
         writableDatabase.beginTransaction();
@@ -54,6 +55,8 @@ public class Database extends SQLiteOpenHelper {
 
         writableDatabase.setTransactionSuccessful();
         writableDatabase.endTransaction();
+
+        return Observable.empty();
     }
 
     private static void attemptInsert(SQLiteDatabase writableDatabase, MegaMillionsApiResult result) {
@@ -83,13 +86,14 @@ public class Database extends SQLiteOpenHelper {
         return false;
     }
 
-    public static Cursor getMegaMillionsCursor() {
-        SQLiteDatabase readableDatabase = getInstance().getReadableDatabase();
-        return readableDatabase.query(
-                MegaMillionsContract.TABLE_NAME,
-                MegaMillionsContract.PROJECTION,
-                null, null, null, null,
-                MegaMillionsContract.Column.DRAW_DATE + " DESC");
+    public static Observable<Cursor> getMegaMillionsCursor() {
+
+        return Observable.fromCallable(() ->
+                getInstance().getReadableDatabase().query(
+                        MegaMillionsContract.TABLE_NAME,
+                        MegaMillionsContract.PROJECTION,
+                        null, null, null, null,
+                        MegaMillionsContract.Column.DRAW_DATE + " DESC"));
     }
 
     @Override
