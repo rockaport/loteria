@@ -44,7 +44,7 @@ public class LottoResultsListFragment extends Fragment implements LottoResultsCo
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lotto_results_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_history, container, false);
 
         ButterKnife.bind(this, view);
 

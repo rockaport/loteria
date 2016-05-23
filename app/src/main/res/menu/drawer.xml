@@ -7,6 +7,11 @@
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="@string/home" />
         <item
+            android:id="@+id/my_tickets"
+            android:checked="true"
+            android:icon="@drawable/ic_ticket_black_24dp"
+            android:title="@string/my_tickets" />
+        <item
             android:id="@+id/history"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/history" />

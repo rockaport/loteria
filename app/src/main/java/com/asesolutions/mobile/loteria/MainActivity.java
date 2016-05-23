@@ -2,7 +2,8 @@ package com.asesolutions.mobile.loteria;
 
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -12,6 +13,8 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.asesolutions.mobile.loteria.history.LottoResultsListFragment;
+import com.asesolutions.mobile.loteria.home.HomeFragment;
+import com.asesolutions.mobile.loteria.tickets.TicketsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +62,12 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+
+        // Initialize the home screen
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_container, new HomeFragment())
+                .commit();
     }
 
     private void handleNavigationItemClicked(MenuItem menuItem) {
@@ -66,37 +75,35 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout.closeDrawers();
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.getFragments().size() > 1) {
+            fragmentManager.popBackStackImmediate();
+        }
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
         switch (menuItem.getItemId()) {
             case R.id.home:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.content_container, new Fragment())
-                        .commit();
+                // Do nothing - the pop will take us home
+                break;
+            case R.id.my_tickets:
+                transaction.add(R.id.content_container, new TicketsFragment())
+                        .addToBackStack(null);
                 break;
             case R.id.history:
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .add(R.id.content_container, LottoResultsListFragment.newInstance())
-                        .addToBackStack(null)
-                        .commit();
+                transaction.add(R.id.content_container, LottoResultsListFragment.newInstance())
+                        .addToBackStack(null);
                 break;
         }
+
+        transaction.commit();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        if (fragmentManager.getBackStackEntryCount() == 0) {
-//            super.onBackPressed();
-//        } else {
-//            fragmentManager.popBackStack();
-//        }
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

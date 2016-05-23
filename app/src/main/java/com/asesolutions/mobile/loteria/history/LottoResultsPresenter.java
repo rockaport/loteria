@@ -11,10 +11,10 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class LottoResultsPresenter implements LottoResultsContract.Presenter {
+class LottoResultsPresenter implements LottoResultsContract.Presenter {
     private LottoResultsContract.View view;
 
-    public LottoResultsPresenter(LottoResultsContract.View view) {
+    LottoResultsPresenter(LottoResultsContract.View view) {
         this.view = view;
     }
 
@@ -34,13 +34,14 @@ public class LottoResultsPresenter implements LottoResultsContract.Presenter {
                     .flatMap(refresh -> MegaMillionsService.fetchResults())
                     .flatMap(Database::save)
                     .singleOrDefault(null)
-                    .flatMap(aVoid -> Database.getMegaMillionsCursor());
+                    .flatMap(aVoid -> Database.getMegaMillionsCursor())
+                    .delay(2, TimeUnit.SECONDS);
         } else {
             finalObservable = Database.getMegaMillionsCursor();
         }
 
         finalObservable
-                .delay(2, TimeUnit.SECONDS)
+
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnTerminate(() -> view.displayProgress(false))

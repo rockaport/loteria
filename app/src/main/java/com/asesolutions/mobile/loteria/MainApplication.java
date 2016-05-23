@@ -8,7 +8,8 @@ import android.preference.PreferenceManager;
 import timber.log.Timber;
 
 public class MainApplication extends Application {
-    static Context context;
+    // TODO: this lint warning indicates quick run is broken using a static context
+    private static Context context;
 
     public static Context getStaticContext() {
         return context;

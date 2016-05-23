@@ -6,4 +6,5 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="fetch_lotto_results_progress">Fetching Lotto Results</string>
+    <string name="my_tickets">My Tickets</string>
 </resources>

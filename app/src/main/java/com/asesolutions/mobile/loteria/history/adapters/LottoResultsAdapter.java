@@ -2,6 +2,7 @@ package com.asesolutions.mobile.loteria.history.adapters;
 
 import android.database.Cursor;
 import android.graphics.drawable.GradientDrawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -10,10 +11,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.asesolutions.mobile.loteria.DateUtil;
 import com.asesolutions.mobile.loteria.MainApplication;
 import com.asesolutions.mobile.loteria.R;
 import com.asesolutions.mobile.loteria.database.MegaMillionsContract;
+import com.asesolutions.mobile.loteria.utils.DateUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -25,16 +26,16 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
     private static final SimpleDateFormat dateDisplayFormat =
             new SimpleDateFormat("EEEE, MMMM d, yyyy", Locale.US);
 
-    long currentTime;
-    Cursor resultsCursor;
-    int ballColor;
-    int extraBallColor;
+    private long currentTime;
+    private Cursor resultsCursor;
+    private int ballColor;
+    private int extraBallColor;
 
     public LottoResultsAdapter(Cursor resultsCursor) {
         this.resultsCursor = resultsCursor;
         this.currentTime = System.currentTimeMillis();
-        this.ballColor = MainApplication.getStaticContext().getResources().getColor(R.color.colorPrimary);
-        this.extraBallColor = MainApplication.getStaticContext().getResources().getColor(R.color.colorAccent);
+        this.ballColor = ContextCompat.getColor(MainApplication.getStaticContext(), R.color.colorPrimary);
+        this.extraBallColor = ContextCompat.getColor(MainApplication.getStaticContext(), R.color.colorAccent);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
         return resultsCursor.getCount();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.draw_date)
         TextView drawDate;
         @BindView(R.id.date_ago)
@@ -118,7 +119,7 @@ public class LottoResultsAdapter extends RecyclerView.Adapter<LottoResultsAdapte
         @BindView(R.id.numbers_container)
         LinearLayout numbersContainer;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

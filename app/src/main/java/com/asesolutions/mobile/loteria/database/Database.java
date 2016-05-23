@@ -5,9 +5,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.asesolutions.mobile.loteria.DateUtil;
 import com.asesolutions.mobile.loteria.MainApplication;
 import com.asesolutions.mobile.loteria.data.MegaMillionsApiResult;
+import com.asesolutions.mobile.loteria.utils.DateUtil;
 
 import java.text.ParseException;
 import java.util.List;
@@ -20,7 +20,7 @@ public class Database extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static Database instance = null;
 
-    protected Database() {
+    private Database() {
         super(MainApplication.getStaticContext(), NAME, null, VERSION);
     }
 
@@ -70,7 +70,7 @@ public class Database extends SQLiteOpenHelper {
         }
     }
 
-    public static boolean exists(MegaMillionsApiResult megaMillionsApiResult) {
+    private static boolean exists(MegaMillionsApiResult megaMillionsApiResult) {
         try {
             long unixTime = DateUtil.iso8601toUnixTime(megaMillionsApiResult.getDrawDate());
 
@@ -87,7 +87,6 @@ public class Database extends SQLiteOpenHelper {
     }
 
     public static Observable<Cursor> getMegaMillionsCursor() {
-
         return Observable.fromCallable(() ->
                 getInstance().getReadableDatabase().query(
                         MegaMillionsContract.TABLE_NAME,
